@@ -1,0 +1,63 @@
+﻿@using FindIt.Models.Entities
+@model Filtre
+@{
+    ViewBag.Title = "All";
+    ICollection<CommandeClient> commandeClients = ViewBag.CommandeClient;
+}
+
+<h2>Historique des commandes</h2>
+@using (@Html.BeginForm("index", "CommandeClient", FormMethod.Post, new { @class = "form-horizontal" })) {
+<div class="form-group">
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-addon">Nom d'utilisateur</span>
+            @Html.TextBoxFor(m => m.Username, new { @class = "form-control" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-addon">Date Min.</span>
+            @Html.TextBoxFor(m => m.MinimumDate, new { @class = "form-control", type = "date" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="input-group">
+            <span class="input-group-addon">Date Max.</span>
+            @Html.TextBoxFor(m => m.MaximumDate, new { @class = "form-control", type = "date" })
+        </div>
+    </div>
+</div>
+<div class="form-group text-center">
+    <input type="submit" class="btn btn-primary" value="Lancez la recherche" />
+</div>
+}
+
+@if (commandeClients != null && commandeClients.Count > 0) {
+    <table class="table">
+        <tr>
+            <th>N°</th>
+            <th>Utilisateur</th>
+            <th>Date</th>
+            <th>Opération</th>
+        </tr>
+        @if (commandeClients != null && commandeClients.Count > 0) {
+            foreach (CommandeClient cc in commandeClients) {
+                <tr>
+                    <td>@cc.Id</td>
+                    <td>@cc.Client.UserName</td>
+                    <td>@cc.DateCommande</td>
+                    <td>
+                        @Html.ActionLink("Détails", "Details", new { Id = cc.Id }, new { @class = "btn btn-default" })
+                        @Html.ActionLink("Supprimer", "Delete", new { Id = cc.Id }, new { @class = "btn btn-default" })
+                    </td>
+                </tr>
+            }
+        }
+    </table>
+}
+else {
+    <div class="alert alert-info">
+        Il ne figure aucune commande dans l'historique.
+    </div>
+}
+

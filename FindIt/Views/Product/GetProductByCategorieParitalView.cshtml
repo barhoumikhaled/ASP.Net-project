@@ -1,0 +1,101 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@using PagedList.Mvc;
+@model PagedList.IPagedList<Product>
+@{Layout = null;
+List<SubCategorie> subCategorie = (List<SubCategorie>)TempData["subCategories"];
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+<div>
+    @if (subCategorie != null)
+    {
+        foreach (SubCategorie s in subCategorie)
+        {
+            <button type="button" onclick="getByIdMainCategorie(@s.Id)" class="btn btn-default">@s.Name</button>
+        }
+    }
+</div>
+<div class="row masonry-grid-fitrows grid-space-10">
+
+    
+    @foreach (var product in Model)
+    {
+        if (product.Files != null)
+        {
+            int image = product.Files.Count;
+            <div class="col-md-3 col-sm-6 masonry-grid-item">
+                <div class="listing-item white-bg bordered mb-20">
+                    <div>
+                        @if (User.IsInRole("Admin") || User.IsInRole("Buyer"))
+                        {
+                            @Html.ActionLink("Edit", "Edit", new { id = @product.Id }, new { @class = "btn btn-primary btn-sm" })<text>|</text>
+                            @Html.ActionLink("Delete", "Delete", new { id = @product.Id }, new { @class = "btn btn-danger btn-sm" })<text>|</text>
+                        }
+                            @Html.ActionLink("Details", "Details", new { id = @product.Id }, new { @class = "btn btn-info btn-sm" })
+                    </div>
+                        <div class="overlay-container">
+                            @if (image != 0)
+                        {
+                                <img src="~/File?id=@product.Files.First(f => f.FileType == FileType.Avatar).FileId" alt=" avatar">
+                                <a class="overlay-link popup-img-single" href="~/File?id=@product.Files.First(f => f.FileType == FileType.Avatar).FileId"><i class="fa fa-search-plus"></i></a>
+                        }
+                        else
+                        {
+                                <img src="~/Content/images/imageProduct.jpg" alt="">
+                                <a class="overlay-link popup-img-single" href="~/Content/images/imageProduct.jpg"><i class="fa fa-search-plus"></i></a>
+                        }
+
+                            @*<span class="badge">30% OFF</span>*@
+                            @*<div class="overlay-to-top links">
+                    <span class="small">
+                        <a href="#" class="btn-sm-link"><i class="fa fa-heart-o pr-10"></i>Add to Wishlist</a>
+                        <a href="#" class="btn-sm-link"><i class="icon-link pr-5"></i>View Details</a>
+                    </span>
+                </div>*@
+                        </div>
+                        <div class="body">
+                            <h3><a href="shop-product.html">@product.Name</a></h3>
+                            <p class="small">@product.Description.</p>
+                            <div class="elements-list clearfix">
+                                <span class="price"> $@product.Price</span>
+                                <a id="myLink" href="#" onclick="AddToCart(@product.Id)" class="pull-right margin-clear btn btn-sm btn-default-transparent btn-animated">Add To Cart<i class="fa fa-shopping-cart"></i></a>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+        }
+
+    }
+
+</div>
+<nav class="text-center">
+    <ul class="pagination">
+        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+        @Html.PagedListPager(Model, page => Url.Action("Products",
+                                new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+
+    </ul>
+</nav>
+<script>
+
+    function AddToCart(id) {
+        
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+        var url = globalRootBaseAjaxUrl + "Cart/Add";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { productsId: id, productsQty: 1 },
+        }).done(function (data) {
+            $("#cart").html(data);
+            
+        });
+    }
+
+</script>
+
+

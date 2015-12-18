@@ -1,0 +1,97 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@model Address
+@{
+    ViewBag.Title = "CreateAddressForUser";
+    string labelHtmlClass = "control-label col-md-2";
+    string inputHtmlClass = "form-control";
+}
+
+<h2 style="
+padding: 0;
+font-family: Tahoma, Helvetica,sans-serif;
+font-size: 12px;
+font-weight: bold;
+vertical-align: bottom;
+color: #4f8c31;
+text-align: left;
+width: 100%;">
+    Creer une adresse
+</h2>
+
+@using (@Html.BeginForm("Create", "Address", FormMethod.Post))
+{
+@Html.AntiForgeryToken()
+@Html.ValidationSummary()
+@Html.HiddenFor(m => m.SupplierId);
+@Html.HiddenFor(m => m.UserId);
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.No, new { @class = labelHtmlClass })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.No, new { @class = inputHtmlClass })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Street, new { @class = labelHtmlClass })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.Street, new { @class = inputHtmlClass })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.City, new { @class = labelHtmlClass })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.City, new { @class = inputHtmlClass })
+        </div>
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.PostalCode, new { @class = labelHtmlClass })
+        <div class="col-md-10">
+            @Html.TextBoxFor(m => m.PostalCode, new { @class = inputHtmlClass })
+        </div>
+    </div>
+
+
+    @{
+        int? id = null;
+        IEnumerable<SelectListItem> countryList = CountryManager.GetSelectList(id);
+    }
+
+    <div class="form-group" id="countryList">
+        @Html.Label("Country", new { @class = labelHtmlClass })
+        <div class="col-md-10">
+            @Html.DropDownListFor(m => m.CountryId, countryList, "-select-", new { @class = inputHtmlClass })
+        </div>
+    </div>
+
+    <div id="provinceDrop"></div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2">
+            <input type="submit" class="btn btn-default" value="Enregistrer" />
+        </div>
+    </div>
+</div>
+}
+
+@section scripts{
+
+    <script type="text/javascript">
+    var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+
+    $("#CountryId").change(function () {
+        var url = globalRootBaseAjaxUrl + "Address/ProvinceView";
+        var num = $("#CountryId").val();
+        $.post(url, { id: num }, function (data) {
+            $("#provinceDrop").html(data);
+        })
+    });
+
+    </script>
+}

@@ -1,0 +1,53 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@model IEnumerable<Supplier>
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Supplier Index</h2>
+
+@Html.ActionLink("Add Supplier", "Create","Address")
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Country</th>
+        <th>Email</th>
+    </tr>
+
+    @foreach (Supplier s in Model)
+    {
+        Address address = AddressManager.GetById(s.AddressId);
+        Province province = ProvinceManager.GetById(address.ProvinceId);
+        Country country = CountryManager.GetById(province.CountryId);
+        <tr>
+            <td>@s.Name</td>
+            <td>@s.Description</td>
+            <td>@country.Name</td>
+            <td>@s.Email</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = s.Id })
+                @Html.ActionLink("Details", "Details", new { id = s.Id })
+
+                @{if (User.IsInRole("Admin"))
+                {
+                    @Html.ActionLink("Delete", "Delete", new { id = s.Id }, new { @class = "btnDelete" })
+                }
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function () {
+                return confirm("Are You certain you wish to delete this Supplier");
+            });
+        });
+    </script>
+}

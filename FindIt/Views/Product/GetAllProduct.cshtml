@@ -1,0 +1,146 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+
+@model IEnumerable<Product>
+
+@{
+    //ViewBag.Title = "GetAllProduct";
+}
+
+@Html.ActionLink("Tous les produits", "Products", new { id = 1 }, new { @class = "btn btn-primary btn-sm" })
+
+@if (User.IsInRole("Admin") || User.IsInRole("Employee") || User.IsInRole("Buyer"))
+{
+    <p>
+        @Html.ActionLink("Nouveau Produit", "AddProduct", new { id = 1 }, new { @class = "btn btn-primary btn-sm" })
+    </p>
+}
+
+
+
+
+
+
+
+
+<h2>Recherche par categorie</h2>
+<!-- Tabs start -->
+<!-- ================ -->
+<!-- ================ -->
+<div class="vertical">
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+        @{int i = 1; string idtab = "vtab"; int j = 1; string tabligne = "tab";}
+        @foreach (MainCategories m in MainCategoriesManager.GetAll())
+        {
+            tabligne = tabligne + i;
+            string hrefTab = "#" + idtab + @i;
+            <li id=@tabligne onclick="getByIdCategorie(@m.Id)"><a href=@hrefTab role="tab" data-toggle="tab" id=@m.Id><i class="fa fa-magic pr-10"></i> @m.Name</a></li>
+            {
+                i++;
+            }
+        }
+
+</ul>
+    <!-- Tab panes -->
+    @*@Html.Partial("GetProductByCategorieParitalView")*@
+    <div class="tab-content" id="lisProSubCat">
+        @foreach (MainCategories mm in MainCategoriesManager.GetAll())
+        {
+            string id;
+
+            id = "vtab" + @j;
+            <div id=@id class="tab-pane fade">
+
+    </div>
+                    { j++; }
+        }
+        
+        
+    </div>
+</div>
+<!-- tabs end -->
+<div>
+    <aside class="col-md-3">
+        <div class="sidebar">
+            
+            <div class="block clearfix">
+                <form role="search">
+                    <div class="form-group has-feedback">
+                        <input type="text" class="form-control" placeholder="Search" id="search"/>
+                        <input type="button" value="Chercher" onclick="getBySearch()" class="btn btn-info btn-sm" />
+                        <i class="fa fa-search form-control-feedback"></i>
+                        
+                    </div>
+                </form>
+
+            </div>
+        </div>
+    </aside>
+
+</div>
+
+
+<script>
+
+    function getByIdCategorie(id)
+    {
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+        var url = globalRootBaseAjaxUrl + "Product/GetProductByCategorieParitalView/"+ id ;
+        
+        $.ajax({
+            url: url,
+            data: { },
+        }).done(function (data) {
+            $("#lisProSubCat").html(data);
+            //alert(data);
+            //alert(id);
+        });
+    }
+    function getByIdMainCategorie(id) {
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+        var url = globalRootBaseAjaxUrl + "Product/GetProductBySubCategorieParitalView/" + id;
+
+        $.ajax({
+            url: url,
+            data: {},
+        }).done(function (data) {
+            $("#lisProSubCat").html(data);
+            //alert(data);
+            //alert(id);
+        });
+    }
+    function getBySearch()
+    {
+        
+        var inputSearch = $("#search").val();
+        
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+        var url = globalRootBaseAjaxUrl + "Product/GetProductByNameOrKeyWord/" + inputSearch;
+
+        $.ajax({
+            url: url,
+            data: { name: inputSearch },
+        }).done(function (data) {
+            $("#lisProSubCat").html(data);
+            
+        });
+    }
+
+    $(document).ready(function () {
+
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+
+        $('#AddKeyWord').click(function () {
+
+            var url = globalRootBaseAjaxUrl + "Product/GetProductByCategorie";
+            var id = $("#search").val();
+            $.post(url, { name: id }, function (data) {
+
+                $("#lisProSubCat").html(data);
+            });
+        });
+
+    });
+</script>
+

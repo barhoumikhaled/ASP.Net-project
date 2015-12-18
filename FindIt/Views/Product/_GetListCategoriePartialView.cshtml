@@ -1,0 +1,32 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@using FintIt.Models.Manager
+
+@model IEnumerable<FindIt.Models.Entities.MainCategories>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        
+        <th></th>
+    </tr>
+   @foreach (MainCategories m in MainCategoriesManager.GetAll())
+   {
+        @Html.ActionLink(m.Name, "Edit", new { id = m.Id })
+   }
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>

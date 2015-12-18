@@ -1,0 +1,24 @@
+﻿@using Microsoft.AspNet.Identity
+@using FindIt.Models.Manager
+@using FindIt.Models.Entities
+
+@model Product
+
+@if (User.Identity.IsAuthenticated)
+{
+    for (int i = 1; i <= 5; i++)
+    {
+
+        if (RatingManager.GetUserRating(@User.Identity.GetUserId(), @Model.Id) != null 
+            && RatingManager.GetUserRating(@User.Identity.GetUserId(), @Model.Id).Score >= i)
+        {
+
+            <button type="submit" class="fa fa-star text-default" onclick="AddNote(@i ,@Model.Id)"></button>
+        }
+        else
+        {
+            @*   <i class="fa fa-star" onclick="AddNote(@i ,@Model.Id)"></i> *@
+            <button type="submit" class="fa fa-star" onclick="AddNote(@i ,@Model.Id)"></button>
+        }
+    }
+}

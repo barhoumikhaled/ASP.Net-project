@@ -1,0 +1,80 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<!-- ================ -->
+<section class="main-container padding-bottom-clear">
+    <div class="container">
+        <div class="row">
+            <!-- main start -->
+            <!-- ================ -->
+            <div class="main col-md-12">
+                <div class="row">
+
+                    @using (Html.BeginForm())
+                    {
+                        <div class="col-md-4 col-sm-6">
+                            <div class="ph-20 feature-box text-center object-non-visible" data-animation-effect="fadeInDownSmall" data-effect-delay="300">
+                                <span class="icon large default-bg circle"><i class="fa fa-search"></i></span>
+                                <h3>voir tous les produits</h3>
+                                <div class="separator clearfix"></div>
+                                <p class="text-muted">Pour voir toute la liste des produit c'est ici !.</p>
+                                <a href="@Url.Action("Products", "Product")">Tous les produits <i class="pl-5 fa fa-angle-double-right"></i></a>
+                            </div>
+                        </div>
+                    }
+                    @using (Html.BeginForm())
+                    {
+                        
+                        <div class="col-md-4 col-sm-6">
+                            <div class="ph-20 feature-box text-center object-non-visible" data-animation-effect="fadeInDownSmall" data-effect-delay="100">
+                                <span class="icon large default-bg circle"><i class="fa fa-plus"></i></span>
+                                <h3>Ajouter un produit</h3>
+                                <div class="separator clearfix"></div>
+                                <p class="text-muted">Si vous voulez Ajoutez un produit c'est ici.</p>
+
+                                <a href="@Url.Action("AddProduct", "Product")">Ajouter Produit<i class="pl-5 fa fa-angle-double-right"></i></a>
+
+                            </div>
+                        </div>
+                    }
+                    @using (Html.BeginForm())
+                    {
+                        <div class="col-md-4 col-sm-6">
+                            <div class="ph-20 feature-box text-center object-non-visible" data-animation-effect="fadeInDownSmall" data-effect-delay="200">
+                                <span class="icon large default-bg circle"><i class="fa fa-plus"></i></span>
+                                <h3>Commande fournisseur</h3>
+                                <div class="separator clearfix"></div>
+                                <p class="text-muted">Pour ajouter des commandes c'est ICI!!!.</p>
+                                <a href="@Url.Action("Index", "CommandeSupplier")">Ajouter une commande<i class="pl-5 fa fa-angle-double-right"></i></a>
+                            </div>
+                        </div>
+                    }
+
+                    @using (Html.BeginForm())
+                    {
+                        <div class="col-md-4 col-sm-6">
+                            <div class="ph-20 feature-box text-center object-non-visible" data-animation-effect="fadeInDownSmall" data-effect-delay="300">
+                                <span class="icon large default-bg circle"><i class="fa fa-search"></i></span>
+                                <h3>Chercher un produit</h3>
+                                <div class="separator clearfix"></div>
+                                <p class="text-muted">Pour chercher un produit, modfier un produit, supprimer un ptoduit c'est la !.</p>
+                                <a href="@Url.Action("GetAllProduct", "Product")">Chercher Product <i class="pl-5 fa fa-angle-double-right"></i></a>
+                            </div>
+                        </div>
+                    }
+
+
+
+                    <div class="clearfix visible-md"></div>
+
+                </div>
+            </div>
+            <!-- main end -->
+        </div>
+    </div>
+</section>
+<!-- main-container end -->

@@ -1,0 +1,78 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@using FindIt.Models
+@model Address
+
+@{
+    ViewBag.Title = "Checkout";
+    Address address = Model;
+    String htmlLabelClass = "control-label col-md-2";
+    String htmlInputClass = "form-control";
+    IEnumerable<SelectListItem> CountryList = ViewBag.countryList;
+    IEnumerable<SelectListItem> ProvinceList = ViewBag.provinceList;
+}
+
+<h2>Informations de livraison</h2>
+
+@using (@Html.BeginForm("Checkout", "Cart")) {
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <div class="form-group">
+            @Html.LabelFor(m => m.No, "No", new { @class = htmlLabelClass })
+            @Html.TextBoxFor(m => m.No, new { @class = htmlInputClass })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Street, "Rue", new { @class = htmlLabelClass })
+            @Html.TextBoxFor(m => m.Street, new { @class = htmlInputClass })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PostalCode, "Code Postal", new { @class = htmlLabelClass })
+            @Html.TextBoxFor(m => m.PostalCode, new { @class = htmlInputClass })
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.City, "City", new { @class = htmlLabelClass })
+            @Html.TextBoxFor(m => m.City, new { @class = htmlInputClass })
+        </div>
+        <div class="form-group">
+            @Html.Label("Pays", new { @class = htmlLabelClass })
+            @Html.DropDownListFor(m => m.CountryId, CountryList, "-Select-", new { @class = htmlInputClass })
+        </div>
+        <div id="provinceDrop">
+            @if (ProvinceList != null) {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ProvinceId, "Province", new { @class = htmlLabelClass })
+                    @Html.DropDownListFor(m => m.ProvinceId, ProvinceList, "-Select-", new { @class = htmlInputClass })
+                </div>
+            }
+            else {
+                <div class="form-group">
+                    @Html.LabelFor(m => m.ProvinceId, "Province", new { @class = htmlLabelClass })
+                    <select id="ProvinceId" disabled="disabled" class="@(htmlInputClass)">
+                        <option>- Select -</option>
+                    </select>
+                </div>
+            }
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2">
+                <input type="submit" value="Enregistrer" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts{
+    <script type="text/javascript">
+    var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+
+    $("#CountryId").change(function () {
+        var url = globalRootBaseAjaxUrl + "Address/ProvinceView";
+        var num = $("#CountryId").val();
+        $.post(url, { id: num }, function (data) {
+            $("#provinceDrop").html(data);
+        })
+    });
+
+    </script>
+}
+

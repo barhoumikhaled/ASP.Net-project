@@ -1,0 +1,120 @@
+﻿@using FindIt.Models.Entities
+@using PagedList.Mvc;
+
+@model PagedList.IPagedList<Product>
+@{
+    ViewBag.Title = "Products";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+
+@Html.ActionLink("Chercher", "GetAllProduct", new { id=1}, new { @class = "btn btn-primary btn-sm" })
+@if (User.IsInRole("Admin") || User.IsInRole("Buyer"))
+{
+    <p>
+        @Html.ActionLink("Nouveau Produit", "AddProduct", new { id = 1 }, new { @class = "btn btn-primary btn-sm" })
+    </p>
+}
+<!-- main-container start -->
+<!-- ================ -->
+<section class="main-container">
+    <div class="container">
+        <div class="row">
+            <!-- main start -->
+            <!-- ================ -->
+            <div class="main col-md-12">
+                <!-- pills start -->
+                <!-- ================ -->
+                <!-- Nav tabs -->
+                <ul class="nav nav-pills" role="tablist">
+                    <li class="active"><a href="#pill-1" role="tab" data-toggle="tab" title="Latest Arrivals"><i class="icon-star"></i> Latest Arrivals</a></li>
+                    
+                </ul>
+                <!-- Tab panes -->
+                <div class="tab-content clear-style">
+                    <div class="tab-pane active" id="pill-1">
+                        <div class="row masonry-grid-fitrows grid-space-10">
+                            @foreach (Product product in Model)
+                            {
+                                if (product.Files != null)
+                                {
+
+                                    int image = product.Files.Count;
+
+                                    <div class="col-md-3 col-sm-6 masonry-grid-item">
+                                        <div class="listing-item white-bg bordered mb-20">
+                                            <div>
+                                                @if (User.IsInRole("Admin") || User.IsInRole("Buyer")) {
+                                                    @Html.ActionLink("Edit", "Edit", new { id = @product.Id }, new { @class = "btn btn-primary btn-sm" })<text> | </text>
+                                                    @Html.ActionLink("Delete", "Delete", new { id = @product.Id }, new { @class = "btn btn-danger btn-sm" })<text> | </text>
+                                                }
+                                                @Html.ActionLink("Details", "Details", new { id = @product.Id }, new { @class = "btn btn-info btn-sm" })
+                                            </div>
+                                            <div class="overlay-container">
+                                                @if (image != 0)
+                                                {
+                                                    <img src="~/File?id=@product.Files.First(f => f.FileType == FileType.Avatar).FileId" alt=" avatar">
+                                                    <a class="overlay-link popup-img-single" href="~/File?id=@product.Files.First(f => f.FileType == FileType.Avatar).FileId"><i class="fa fa-search-plus"></i></a>
+                                                }
+                                                else
+                                                {
+                                                    <img src="~/Content/images/imageProduct.jpg" alt="">
+                                                    <a class="overlay-link popup-img-single" href="~/Content/images/imageProduct.jpg"><i class="fa fa-search-plus"></i></a>
+                                                }
+                                                
+                                            </div>
+                                            <div class="body">
+                                                <h3><a href="shop-product.html">@product.Name</a></h3>
+                                                <p class="small">@product.Description.</p>
+                                                <div class="elements-list clearfix">
+                                                    <span class="price">$@product.Price</span>
+                                                    <a id="myLink" href="#" onclick="AddToCart(@product.Id);" class="pull-right margin-clear btn btn-sm btn-default-transparent btn-animated">Add To Cart<i class="fa fa-shopping-cart"></i></a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                }
+                            }
+                            
+                        </div>
+                    </div>
+
+                </div>
+                <!-- pills end -->
+                <!-- pagination start -->
+                <nav class="text-center">
+                    <ul class="pagination">
+                        Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+
+                        @Html.PagedListPager(Model, page => Url.Action("Products",
+                                new { page, sortOrder = ViewBag.CurrentSort, currentFilter = ViewBag.CurrentFilter }))
+                        
+                    </ul>
+                </nav>
+                <!-- pagination end -->
+            </div>
+            <!-- main end -->
+        </div>
+    </div>
+</section>
+
+	
+
+	
+<script>
+
+    function AddToCart(id) {
+        var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+        var url = globalRootBaseAjaxUrl + "Cart/Add";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: { productsId: id, productsQty : 1 },
+        }).done(function (data) {
+            $("#cart").html(data);
+        });
+    }
+</script>

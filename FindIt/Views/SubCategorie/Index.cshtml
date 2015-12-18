@@ -1,0 +1,59 @@
+﻿﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+
+@model SubCategorie
+@{
+    ViewBag.Title = "AddSubCategorie";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<h2>Gestion des Categories secondaire</h2>
+@Html.ActionLink("Ajouter", "Index", new { id = 0 })
+@using (Html.BeginForm("AddSubCategorie", "SubCategorie"))
+{
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(c => c.Id)
+
+    @Html.DropDownListFor(c=>c.MainCategoriesId ,new SelectList(MainCategoriesManager.GetAll(),"Id", "Name"))
+
+    @Html.TextBoxFor(c => c.Name)
+
+<input type="submit" />
+
+}
+<div>
+    @foreach(MainCategories mc in MainCategoriesManager.GetAll()){
+    <ul>
+        <li>
+            @mc.Name
+            @foreach (SubCategorie sc in @mc.SubCategorie) {
+            <ul>
+                <li>
+                    @sc.Name
+
+                    <span>@Html.ActionLink("Modifier", "AddSubCategorie", new { id = @sc.Id })</span>
+                    <span>
+                        @Html.ActionLink("Supprimer", "Delete", new { idSubCategorie = @sc.Id, id = 0 }, new { @class = "delete"})
+                    </span>
+                </li>
+            </ul>
+            }
+        </li>
+    </ul>
+    }
+
+</div>
+
+
+@section scripts{
+<script>
+
+    $(document).ready(function () {
+        $('.delete').click(function () {
+            return confirm("Si vouz supprimer cette categorie vous allez supprimer tous les produits qui vont avec");
+        });
+    });
+    });
+</script>
+}
+

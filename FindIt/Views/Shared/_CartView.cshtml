@@ -1,0 +1,52 @@
+﻿@using FindIt.Models.Entities
+@{
+    ICollection<CartProduct> cart = new List<CartProduct>();
+    if (Session["cart"] != null) {
+        cart = (Session["cart"] as ICollection<CartProduct>);
+    }
+}
+
+@if (cart.Count == 0) {
+    <button type="button" class="btn" disabled="disabled"><i class="icon-basket-1"></i><span class="cart-count default-bg">0</span></button>
+}
+else {
+    <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><i class="icon-basket-1"></i><span class="cart-count default-bg">@(cart.Count)</span></button>
+    <ul class="dropdown-menu dropdown-menu-right dropdown-animation cart">
+        <li>
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th class="picture">Photo</th>
+                        <th class="product">Produit</th>
+                        <th class="quantity">Qte</th>
+                        <th class="amount">Prix Unitaire</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (CartProduct cp in cart) {
+                        <tr>
+                            @if (cp.Product != null) {
+                                if (cp.Product.Photo != null) {
+                                    <td class="col-xs-2 col-sm-2 col-md-2"><img src="/Content/images/@(cp.Product.Photo)" alt="Photo du produit" /></td>
+                                }
+                                else {
+                                    <td class="col-xs-2 col-sm-2 col-md-2">Aucune Image</td>
+                                }
+                                <td class="col-xs-6 col-sm-6 col-md-6">@(cp.Product.Name)</td>
+                                <td class="col-xs-2 col-sm-2 col-md-2">@(cp.Qty)</td>
+                                <td class="col-xs-2 col-sm-2 col-md-2">@(cp.Product.Price) $</td>
+                            }
+                            else {
+                                <td colspan="4">Une erreur est survenue.</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="panel-body text-right">
+                <a href="/Cart/Index" class="btn btn-group btn-gray btn-sm">Voir Panier</a>
+                <a href="/Cart/Checkout" class="btn btn-group btn-gray btn-sm">Passez à la caisse</a>
+            </div>
+        </li>
+    </ul>
+}

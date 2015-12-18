@@ -1,0 +1,80 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@model Supplier
+@{
+    ViewBag.Title = "Details";
+    Address address = AddressManager.GetById(Model.AddressId);
+    Province province = ProvinceManager.GetById(address.ProvinceId);
+    Country country = CountryManager.GetById(province.CountryId);
+    List<Product> listProduct = ProductManager.GetAllBySupplierId(Model.Id);
+}
+
+<h2>SupplierDetails</h2>
+
+
+<table class="table">
+    @Html.HiddenFor(m => m.Id);
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Address</th>
+        <th>City</th>
+        <th>Province/State</th>
+        <th>Country</th>
+        <th>Phone</th>
+        <th>Contact tRessource</th>
+        <th>Email</th>
+    </tr>
+
+    <tr>
+        <td>@Model.Name</td>
+        <td>@Model.Description</td>
+        <td>@address.No @address.Street @address.PostalCode</td>
+        <td>@address.City</td>
+        <td>@province.Name</td>
+        <td>@country.Name</td>
+        <td>@Model.Phone</td>
+        <td>@Model.ContactRessource</td>
+        <td>@Model.Email</td>
+    </tr>
+</table>
+<h3>Products of the Supplier @Model.Name</h3>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Price</th>
+        <th>Quantity</th>
+    </tr>
+    @foreach (Product product in listProduct)
+    {
+        
+        <tr>
+            <td>@product.Name</td>
+            <td>@product.Description</td>
+            <td>@product.Price</td>
+            <td>@product.Qty</td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", "Product", new { id = product.Id }, new { @class = "btnDetails" })
+
+                @{if (User.IsInRole("Admin"))
+                {
+                    @Html.ActionLink("Delete", "Delete", "Product", new { id = product.Id }, new { @class = "btnDelete" })
+                }
+                }
+            </td>
+        </tr>
+    }
+</table>
+
+@Html.ActionLink("Back", "Index")
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btnDelete').click(function () {
+                return confirm("Are You certain you wish to delete this Product?");
+            });
+        });
+    </script>
+}

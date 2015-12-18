@@ -1,0 +1,38 @@
+﻿@using FindIt.Models.Entities
+@model Filtre
+@{
+    ViewBag.Title = "Index";
+    ICollection<CommandeClient> commandeClients = ViewBag.CommandeClient;
+}
+
+<h2>Historique des commandes</h2>
+@if (commandeClients != null && commandeClients.Count > 0) {
+    <table class="table">
+        <tr>
+            <th>N°</th>
+            <th>Date</th>
+            <th>Opération</th>
+        </tr>
+        @if (commandeClients != null && commandeClients.Count > 0) {
+            foreach (CommandeClient cc in commandeClients) {
+        <tr>
+            <td>@cc.Id</td>
+            <td>@cc.DateCommande</td>
+            <td>
+                @Html.ActionLink("Détails", "Details", new { Id = cc.Id }, new { @class = "btn btn-default" })
+                @Html.ActionLink("Supprimer", "Delete", new { Id = cc.Id }, new { @class = "btn btn-default" })
+            </td>
+        </tr>
+            }
+        }
+    </table>
+   
+}
+else {
+    <div class="alert alert-info">
+        Il ne figure aucune commande dans l'historique.
+    </div>
+}
+
+
+

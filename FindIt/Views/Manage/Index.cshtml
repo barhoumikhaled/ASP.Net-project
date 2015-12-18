@@ -1,0 +1,20 @@
+﻿@model FindIt.Models.IndexViewModel
+@{
+    ViewBag.Title = "Manage";
+}
+
+<h2>@ViewBag.Title.</h2>
+
+<p class="text-success">@ViewBag.StatusMessage</p>
+<div>
+    <h4>Change your account settings</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>Mot de passe:</dt>
+        <dd>
+            [@Html.ActionLink("Modifiez votre mot de passe", "ChangePassword")]
+        </dd>
+        <dt>Commandes</dt>
+        <dd>[@Html.ActionLink("Voir mon historique", "Index", "CommandeClient")]</dd>
+    </dl>
+</div>

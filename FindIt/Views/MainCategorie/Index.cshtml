@@ -1,0 +1,57 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+
+@model MainCategories
+@{
+    ViewBag.Title = "AddMainCategorie";
+}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<h2>Gestion des Categories primaire</h2>
+
+@Html.ActionLink("Ajouter", "Index",new {id = 0})
+@using (Html.BeginForm("AddMainCategorie", "MainCategorie"))
+{
+
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(c => c.Id)
+    
+  //  @Html.TextBoxFor(c => c.Id)
+
+    @Html.TextBoxFor(c => c.Name)
+
+    <input type="submit" />
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Action</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (MainCategories mc in MainCategoriesManager.GetAll())
+        {
+            <tr>
+                <td>@mc.Id</td>
+                <td>@mc.Name</td>
+
+                <td>@Html.ActionLink("Modifier", "AddMainCategorie", new { id = @mc.Id })</td>
+                <td>@Html.ActionLink("Supprimer", "Delete", new { idCategorie = @mc.Id, id = 0 }, new { @class = "delete" })</td>
+
+            </tr>
+        }
+    </tbody>
+
+</table>
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.delete').click(function () {
+                return confirm("Si vouz supprimer cette categorie vous allez supprimer tous les produits qui vont avec");
+            });
+        });
+    </script>
+}

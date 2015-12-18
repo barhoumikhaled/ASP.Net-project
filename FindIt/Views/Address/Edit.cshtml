@@ -1,0 +1,76 @@
+﻿@using FindIt.Models.Entities
+@using FindIt.Models.Manager
+@model Address
+@{
+    ViewBag.Title = "Edit";
+    string labelHtmlClass = "control-label col-md-2";
+    string inputHtmlClass = "form-control";
+}
+
+<h2>AddressEdit</h2>
+
+@(Html.BeginForm("Edit", "Address", FormMethod.Post))
+{
+@Html.AntiForgeryToken()
+@Html.ValidationSummary()
+@Html.HiddenFor(m => m.SupplierId);
+
+<div class="form-horizontal">
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.No, new { @class = labelHtmlClass })
+        @Html.TextBoxFor(m => m.No, new { @class = inputHtmlClass })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.Street, new { @class = labelHtmlClass })
+        @Html.TextBoxFor(m => m.Street, new { @class = inputHtmlClass })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.City, new { @class = labelHtmlClass })
+        @Html.TextBoxFor(m => m.City, new { @class = inputHtmlClass })
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(m => m.PostalCode, new { @class = labelHtmlClass })
+        @Html.TextBoxFor(m => m.PostalCode, new { @class = inputHtmlClass })
+    </div>
+
+
+    @{
+        int? id = null;
+        IEnumerable<SelectListItem> countryList = CountryManager.GetSelectList(id);
+    }
+
+    <div class="form-group" id="countryList">
+        @Html.Label("Country", new { @class = labelHtmlClass })
+        @Html.DropDownListFor(m => m.CountryId, countryList, "-select-", new { @class = inputHtmlClass })
+    </div>
+
+    <div id="provinceDrop"></div>
+
+
+    <div class="form-group">
+        <div class="col-md-offset-2">
+            <input type="submit" value="submit" />
+        </div>
+    </div>
+</div>
+}
+
+@section scripts{
+
+    <script type="text/javascript">
+    var globalRootBaseAjaxUrl = '@VirtualPathUtility.ToAbsolute("~/")';
+
+    $("#CountryId").change(function () {
+        var url = globalRootBaseAjaxUrl + "Address/ProvinceView";
+        var num = $("#CountryId").val();
+        $.post(url, { id: num }, function (data) {
+            $("#provinceDrop").html(data);
+        })
+    });
+
+    </script>
+}

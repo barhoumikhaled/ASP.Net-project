@@ -1,0 +1,36 @@
+﻿
+@using FindIt.Models
+@model LoginViewModel
+@{
+    Layout = null;
+}
+
+@using (Html.BeginForm("Login", "Account", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "login-form margin-clear" })) {
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    
+    <div class="form-group has-feedback">
+        <label class="control-label">Nom d'utilisateur</label>
+        @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "" })
+        <i class="fa fa-user form-control-feedback"></i>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group has-feedback">
+        <label class="control-label">Mot de passe</label>
+        @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "" })
+        <i class="fa fa-lock form-control-feedback"></i>
+        @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+    </div>
+    <div class="form-group text-left">
+        <div class="form-control">
+            @Html.CheckBoxFor(m => m.RememberMe)
+            @Html.LabelFor(m => m.RememberMe, "Se souvenir de moi ?")
+        </div>
+    </div>
+    <button type="submit" class="btn btn-gray btn-sm">Connexion</button>
+    <span class="pl-5 pr-5">ou</span>
+    <a href="/Accout/Register" class="btn btn-default btn-sm" id="registerLink"><i class="fa fa-user pr-10"></i>S'inscrire</a>
+    <ul>
+        <li><a href="#">Mot de passe oublié?</a></li>
+    </ul>
+}
